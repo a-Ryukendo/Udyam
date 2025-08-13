@@ -2,6 +2,12 @@ import type { Handler } from '@netlify/functions'
 import { z } from 'zod'
 import { Client } from 'pg'
 
+const corsHeaders = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET,POST,OPTIONS',
+  'access-control-allow-headers': 'content-type'
+}
+
 const AadhaarStepSchema = z.object({
   aadhaarNumber: z.string().regex(/^\d{12}$/),
   entrepreneurName: z.string().min(1),
@@ -39,9 +45,17 @@ const schemaDoc = {
 }
 
 const handler: Handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers: corsHeaders, body: '' }
+  }
+
   const base = '/.netlify/functions/api'
   const fullPath = event.path || ''
   const path = fullPath.startsWith(base) ? fullPath.slice(base.length) : fullPath
+
+  if (event.httpMethod === 'GET' && (path === '/health' || path === '/')) {
+    return json(200, { ok: true })
+  }
 
   if (event.httpMethod === 'GET' && path === '/schema') {
     return json(200, schemaDoc)
@@ -102,6 +116,6 @@ function parse(body: string | null) {
   try { return body ? JSON.parse(body) : null } catch { return null }
 }
 function json(status: number, data: unknown) {
-  return { statusCode: status, headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) }
+  return { statusCode: status, headers: { 'content-type': 'application/json', ...corsHeaders }, body: JSON.stringify(data) }
 }
 export { handler }
