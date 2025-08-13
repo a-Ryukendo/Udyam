@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions'
 import { z } from 'zod'
 import { Client } from 'pg'
+import axios from 'axios';
 
 const corsHeaders = {
   'access-control-allow-origin': '*',
@@ -14,6 +15,13 @@ const AadhaarStepSchema = z.object({
   consent: z.literal(true),
   pinCode: z.string().regex(/^\d{6}$/)
 })
+
+// example
+const apiBase = window.location.hostname.endsWith('netlify.app')
+  ? '/.netlify/functions/api'
+  : '/api';
+
+axios.get(`${apiBase}/schema`);
 
 const PanStepSchema = z.object({
   pan: z.string().regex(/^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/)
