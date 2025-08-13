@@ -5,7 +5,14 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { usePinLookup } from './hooks/usePinLookup'
-import { getApiBase } from './lib/api'
+
+function getApiBase(): string {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host.endsWith('netlify.app')) return '/.netlify/functions/api'
+  }
+  return '/api'
+}
 
 const apiBase = getApiBase()
 
