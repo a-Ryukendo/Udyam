@@ -39,7 +39,9 @@ const schemaDoc = {
 }
 
 const handler: Handler = async (event) => {
-  const path = event.path.replace(/^.*?\\.netlify\\/functions\\/api/, '')
+  const base = '/.netlify/functions/api'
+  const fullPath = event.path || ''
+  const path = fullPath.startsWith(base) ? fullPath.slice(base.length) : fullPath
 
   if (event.httpMethod === 'GET' && path === '/schema') {
     return json(200, schemaDoc)
@@ -60,10 +62,10 @@ const handler: Handler = async (event) => {
     const body = parse(event.body)
     const parsed = z.object({
       stepId: z.enum(['aadhaar_otp', 'pan_validation']),
-      aadhaarNumber: z.string().regex(/^\\d{12}$/).optional(),
+      aadhaarNumber: z.string().regex(/^\d{12}$/).optional(),
       entrepreneurName: z.string().min(1).optional(),
       consent: z.boolean().optional(),
-      pinCode: z.string().regex(/^\\d{6}$/).optional(),
+      pinCode: z.string().regex(/^\d{6}$/).optional(),
       pan: z.string().regex(/^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/).optional()
     }).safeParse(body)
 
