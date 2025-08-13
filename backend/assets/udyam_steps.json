@@ -1,0 +1,57 @@
+{
+  "title": "Udyam Registration (Steps 1 & 2)",
+  "steps": [
+    {
+      "id": "aadhaar_otp",
+      "title": "Aadhaar Verification With OTP",
+      "fields": [
+        {
+          "id": "aadhaarNumber",
+          "label": "Aadhaar Number/ आधार संख्या",
+          "type": "text",
+          "placeholder": "Your Aadhaar No",
+          "validation": { "regex": "^\\d{12}$", "required": true }
+        },
+        {
+          "id": "entrepreneurName",
+          "label": "Name of Entrepreneur / उद्यमी का नाम",
+          "type": "text",
+          "placeholder": "Name as per Aadhaar",
+          "validation": { "required": true, "maxLength": 100 }
+        },
+        {
+          "id": "pinCode",
+          "label": "PIN Code",
+          "type": "text",
+          "placeholder": "6-digit PIN",
+          "validation": { "regex": "^\\d{6}$", "required": true }
+        },
+        {
+          "id": "consent",
+          "label": "Consent for using Aadhaar for Udyam Registration",
+          "type": "checkbox",
+          "validation": { "required": true }
+        }
+      ],
+      "actions": [
+        { "id": "validate_generate_otp", "label": "Validate & Generate OTP", "type": "submit" }
+      ]
+    },
+    {
+      "id": "pan_validation",
+      "title": "PAN Validation",
+      "fields": [
+        {
+          "id": "pan",
+          "label": "PAN Number",
+          "type": "text",
+          "placeholder": "Enter PAN",
+          "validation": { "regex": "^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$", "required": true }
+        }
+      ],
+      "actions": [
+        { "id": "validate_pan", "label": "Validate PAN", "type": "submit" }
+      ]
+    }
+  ]
+}
