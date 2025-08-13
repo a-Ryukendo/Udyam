@@ -5,6 +5,9 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { usePinLookup } from './hooks/usePinLookup'
+import { getApiBase } from './lib/api'
+
+const apiBase = getApiBase()
 
 type Field = {
   id: string
@@ -51,7 +54,7 @@ export default function App() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
 
   useEffect(() => {
-    axios.get('/api/schema').then((r) => setSchema(r.data))
+    axios.get(`${apiBase}/schema`).then((r) => setSchema(r.data))
   }, [])
 
   const step: Step | null = useMemo(() => {
@@ -75,8 +78,8 @@ export default function App() {
 
   async function onSubmit(values: any) {
     if (!step || !schema) return
-    await axios.post('/api/validate', { stepId: step.id, data: values })
-    await axios.post('/api/submit', { stepId: step.id, ...values })
+    await axios.post(`${apiBase}/validate`, { stepId: step.id, data: values })
+    await axios.post(`${apiBase}/submit`, { stepId: step.id, ...values })
 
     if (currentStepIndex < schema.steps.length - 1) setCurrentStepIndex(currentStepIndex + 1)
     else alert('Submitted')
